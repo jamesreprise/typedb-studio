@@ -117,4 +117,4 @@ LICENSE, Version 3, 19 November 2007. For license information, please
 see [LICENSE](https://github.com/vaticle/typedb-studio/blob/master/LICENSE). Vaticle also provides a commercial license
 for TypeDB Studio - get in touch with our team at commercial@vaticle.com.
 
-Copyright (C) 2022 Vaticle
+Copyright (C) 2018-present Vaticle

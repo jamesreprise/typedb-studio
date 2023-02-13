@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2022 Vaticle
+# Copyright (C) 2018-present Vaticle
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@ load("@vaticle_dependencies//tool/checkstyle:rules.bzl", "checkstyle_test")
 
 checkstyle_test(
     name = "checkstyle",
+    year = "2018",
     include = glob(["*", "*/*"]),
     exclude = glob(["*/*.png", "*/*.gif", "*/*.dot"]),
     license_type = "agpl-header",

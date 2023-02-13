@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2022 Vaticle
+# Copyright (C) 2018-present Vaticle
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -136,7 +136,7 @@ assemble_jvm_platform(
     }),
     description = "TypeDB's Integrated Development Environment",
     vendor = "Vaticle Ltd",
-    copyright = "Copyright (C) 2022 Vaticle",
+    copyright = "Copyright (C) 2018-present Vaticle",
     license_file = ":LICENSE",
     version_file = ":VERSION",
     icon = select({
@@ -196,6 +196,7 @@ deploy_brew(
 
 checkstyle_test(
     name = "checkstyle",
+    year = "2018",
     include = glob([
         "*",
         ".factory/*",
@@ -215,6 +216,7 @@ checkstyle_test(
     name = "checkstyle-license",
     include = ["LICENSE"],
     license_type = "agpl-fulltext",
+    year = "2018",
 )
 
 native_typedb_artifact(

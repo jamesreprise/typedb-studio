@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2022 Vaticle
+# Copyright (C) 2018-present Vaticle
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package(default_visibility = ["//:__pkg__"])
 
 checkstyle_test(
     name = "checkstyle",
+    year = "2018",
     include = glob(["*"]),
     exclude = ["artifacts.snapshot"],
     license_type = "agpl-header",
