@@ -18,7 +18,7 @@
 load("//:deployment.bzl", deployment_github = "deployment")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("@vaticle_dependencies//distribution:deployment.bzl", "deployment")
-load("@vaticle_dependencies//tool/checkstyle:rules.bzl", "checkstyle_test")
+load("@vaticle_dependencies//tool/copyright:rules.bzl", "copyright_test")
 load("@vaticle_bazel_distribution//common:rules.bzl", "assemble_targz", "assemble_versioned", "assemble_zip", "checksum", "java_deps")
 load("@vaticle_bazel_distribution//common/tgz2zip:rules.bzl", "tgz2zip")
 load("@vaticle_bazel_distribution//github:rules.bzl", "deploy_github")
@@ -212,12 +212,33 @@ checkstyle_test(
     license_type = "agpl-header",
 )
 
-checkstyle_test(
-    name = "checkstyle-license",
-    include = ["LICENSE"],
-    license_type = "agpl-fulltext",
+copyright_test(
+    name = "copyright",
+    license_type = "agpl-header",
     year = "2018",
+    exclude = [
+        "LICENSE",
+        "RELEASE_TEMPLATE.md",
+        "VERSION",
+        "dependencies/maven/artifacts.snapshot",
+        "docs/packages/framework-package-structure.dot",
+        "docs/packages/global-package-structure.dot",
+        "docs/packages/module-package-structure.dot",
+        "docs/packages/service-package-structure.dot",
+        "resources/fonts/ubuntumono/UFL.txt",
+        "test/integration/data/sample_file_structure/file3",
+        "test/integration/data/sample_file_structure/folder1/file0",
+        "test/integration/data/sample_file_structure/folder1/file1",
+        "test/integration/data/sample_file_structure/folder2/file2",
+    ],
 )
+#
+#checkstyle_test(
+#    name = "checkstyle-license",
+#    include = ["LICENSE"],
+#    license_type = "agpl-fulltext",
+#    year = "2018",
+#)
 
 native_typedb_artifact(
     name = "native-typedb-artifact",

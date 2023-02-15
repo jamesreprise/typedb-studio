@@ -33,10 +33,3 @@ assemble_targz(
     },
     visibility = ["//visibility:public"]
 )
-
-checkstyle_test(
-    name = "checkstyle",
-    year = "2018",
-    include = glob(["*"]),
-    license_type = "agpl-header",
-)
