@@ -48,7 +48,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
 
 object StudioActions {
 
@@ -77,6 +76,12 @@ object StudioActions {
     suspend fun waitUntilNodeWithTextIsClickable(composeRule: ComposeContentTestRule, text: String) {
         waitUntilAssertionPasses(composeRule) {
             composeRule.onNodeWithText(text).assertHasClickAction()
+        }
+    }
+
+    suspend fun waitUntilNodeWithIconIsClickable(composeRule: ComposeContentTestRule, icon: Icon) {
+        waitUntilAssertionPasses(composeRule) {
+            composeRule.onNodeWithText(icon.unicode).assertHasClickAction()
         }
     }
 
@@ -194,9 +199,11 @@ object StudioActions {
         waitForFileToBeFullyLoaded(composeRule)
 
         clickIcon(composeRule, Icon.RUN)
-        waitUntilTrue(composeRule) {
-            !Service.client.session.transaction.hasRunningQuery
-        }
+//        waitUntilTrue(composeRule) {
+//            !Service.client.session.transaction.hasRunningQuery
+//        }
+
+        waitUntilNodeWithIconIsClickable(composeRule, Icon.COMMIT);
 
         clickIcon(composeRule, Icon.COMMIT)
         waitUntilTrue(composeRule) {
