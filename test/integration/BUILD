@@ -76,6 +76,7 @@ typedb_kt_test(
     test_class = "com.vaticle.typedb.studio.test.integration.QuickstartTest",
     runtime_deps = skiko_runtime_platform,
     deps = compose_test_libraries,
+    size = "enormous"
 )
 
 typedb_kt_test(
@@ -96,6 +97,7 @@ typedb_kt_test(
         "//service/common",
         "@vaticle_typedb_client_java//api",
     ],
+    size = "enormous"
 )
 
 kt_jvm_test(
@@ -110,6 +112,7 @@ kt_jvm_test(
         "//service/page",
         "//service/project",
     ],
+    size = "enormous"
 )
 
 typedb_kt_test(
@@ -140,6 +143,7 @@ typedb_kt_test(
         # External Maven Dependencies
         "@maven//:org_jetbrains_compose_runtime_runtime_desktop",
     ],
+    size = "enormous"
 )
 
 typedb_kt_test(
@@ -164,6 +168,7 @@ typedb_kt_test(
         "//service/schema",
         "@vaticle_typedb_client_java//api",
     ],
+    size = "enormous"
 )
 
 checkstyle_test(
