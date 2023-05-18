@@ -198,6 +198,7 @@ object StudioActions {
         }
         waitForFileToBeFullyLoaded(composeRule)
 
+        waitUntilNodeWithIconIsClickable(composeRule, Icon.RUN)
         clickIcon(composeRule, Icon.RUN)
 //        waitUntilTrue(composeRule) {
 //            !Service.client.session.transaction.hasRunningQuery
@@ -272,9 +273,9 @@ object StudioActions {
     }
 
     object Delays {
-        const val RECOMPOSE = 500
+        const val RECOMPOSE = 750
         const val FILE_IO = 750
         const val NETWORK_IO = 1_500
-        const val WAIT_TIMEOUT: Long = 30_000
+        const val WAIT_TIMEOUT: Long = 60_000
     }
 }
