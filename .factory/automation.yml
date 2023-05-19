@@ -62,7 +62,7 @@ build:
       command: |
         bazel run @vaticle_dependencies//tool/bazelinstall:remote_cache_setup.sh
         bazel build //test/integration/...
-        bazel test $(bazel query '//test/integration/... except kind(checkstyle_test, //test/integration/...)') --jobs=1 --spawn_strategy=local --test_output=errors
+        bazel test $(bazel query '//test/integration/... except kind(checkstyle_test, //test/integration/...)') --jobs=1 --spawn_strategy=local --test_output=errors --runs_per_test=5
 
 release:
   deployment:
