@@ -32,6 +32,7 @@ build:
         bazel run @vaticle_dependencies//factory/analysis:dependency-analysis
   correctness:
     build:
+      machine: 8-core-32-gb
       image: vaticle-ubuntu-22.04
       command: |
         bazel run @vaticle_dependencies//tool/bazelinstall:remote_cache_setup.sh
@@ -39,6 +40,7 @@ build:
         bazel run @vaticle_dependencies//tool/checkstyle:test-coverage
         bazel test $(bazel query 'kind(checkstyle_test, //...)') --test_output=errors
     build-dependency:
+      machine: 8-core-32-gb
       image: vaticle-ubuntu-22.04
       command: |
         bazel run @vaticle_dependencies//tool/bazelinstall:remote_cache_setup.sh
@@ -46,12 +48,14 @@ build:
         git diff --exit-code dependencies/maven/artifacts.snapshot
     test-unit:
       image: vaticle-ubuntu-22.04
+      machine: 8-core-32-gb
       dependencies:
         - build
       command: |
         bazel run @vaticle_dependencies//tool/bazelinstall:remote_cache_setup.sh
         bazel test $(bazel query 'kind(kt_jvm_test, //...) except kind(kt_jvm_test, //test/...)') --test_output=errors
     test-integration:
+      machine: 8-core-32-gb
       image: vaticle-ubuntu-22.04
       dependencies:
         - build
