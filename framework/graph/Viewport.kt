@@ -94,6 +94,15 @@ class Viewport(private val graph: Graph) {
         return nearestVertices.find { it.geometry.visuallyIntersects(worldPoint) }
     }
 
+    fun findEdgeAt(physicalPoint: Offset, interactions: Interactions): Edge? {
+        val worldPoint = physicalPointToWorldPoint(physicalPoint)
+//        val priorityHit = interactions.focusedVertex?.takeIf { it.geometry.visuallyIntersects(worldPoint) }
+//            ?: interactions.hoveredVertex?.takeIf { it.geometry.visuallyIntersects(worldPoint) }
+//        if (priorityHit != null) return priorityHit
+        val nearestEdges = nearestEdges(worldPoint)
+        return nearestEdges.find { it.geometry.visuallyIntersects(worldPoint) }
+    }
+
     private fun physicalPointToWorldPoint(physicalPoint: Offset): Offset {
         val transformOrigin = Offset(physicalSize.width.value, physicalSize.height.value) / 2f
         val scaledPhysicalPoint = physicalPoint / density
@@ -115,6 +124,19 @@ class Viewport(private val graph: Graph) {
         return sequence {
             while (vertexDistances.isNotEmpty()) {
                 yield(vertexDistances.entries.minByOrNull { it.value }!!.key)
+            }
+        }.take(10)
+    }
+
+    private fun nearestEdges(worldPoint: Offset): Sequence<Edge> {
+        // TODO: use out-of-viewport detection to make this function more performant on large graphs
+        val edgeDistances: MutableMap<Edge, Float> = mutableMapOf()
+        graph.edges.associateWithTo(edgeDistances) {
+            (worldPoint - it.geometry.position).getDistanceSquared()
+        }
+        return sequence {
+            while (edgeDistances.isNotEmpty()) {
+                yield(edgeDistances.entries.minByOrNull { it.value }!!.key)
             }
         }.take(10)
     }
