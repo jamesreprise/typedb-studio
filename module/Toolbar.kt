@@ -533,7 +533,7 @@ object Toolbar {
             TextButton(
                 text = text,
                 modifier = Modifier.height(TOOLBAR_BUTTON_SIZE),
-                leadingIcon = Form.IconArg(Icon.CONNECT_TO_TYPEDB),
+                leadingIcon = if (Service.client.isCloudConnection) Form.IconArg (Icon.TYPEDB_CLOUD) else Form.IconArg(Icon.TYPEDB_SERVER),
                 tooltip = Tooltip.Arg(title = Label.CONNECT_TO_TYPEDB)
             ) { Service.client.connectServerDialog.open() }
         }

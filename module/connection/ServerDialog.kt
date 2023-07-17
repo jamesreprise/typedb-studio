@@ -210,7 +210,7 @@ object ServerDialog {
         Field(label = Label.ADDRESSES) {
             TextButton(
                 text = Label.MANAGE_CLUSTER_ADDRESSES + " (${state.clusterAddresses.size})",
-                focusReq = focusReq, leadingIcon = Form.IconArg(Icon.CONNECT_TO_TYPEDB),
+                focusReq = focusReq, leadingIcon = Form.IconArg(Icon.TYPEDB_SERVER),
                 enabled = Service.client.isDisconnected
             ) {
                 Service.client.manageAddressesDialog.open()

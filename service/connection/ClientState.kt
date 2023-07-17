@@ -73,7 +73,9 @@ class ClientState constructor(
     val isConnected: Boolean get() = status == CONNECTED
     val isConnecting: Boolean get() = status == CONNECTING
     val isDisconnected: Boolean get() = status == DISCONNECTED
-    var connectionName: String? by mutableStateOf(null)
+    val connectionName: String?
+        get() = if (!_connectionName.isNullOrBlank() && _connectionName!!.length > 50) _connectionName?.substring(0..47) + "..." else _connectionName
+    val isCloudConnection: Boolean get() = (!_connectionName.isNullOrBlank() && _connectionName!!.matches("[A-z0-9]+@[A-z0-9-.]*cloud.typedb.(com|dev):[0-9]+$".toRegex()))
     var mode: Mode by mutableStateOf(Mode.INTERACTIVE)
     val isScriptMode: Boolean get() = mode == Mode.SCRIPT
     val isInteractiveMode: Boolean get() = mode == Mode.INTERACTIVE
@@ -82,6 +84,7 @@ class ClientState constructor(
     val isReadyToRunQuery get() = session.isOpen && !hasRunningQuery && !hasRunningCommand
     var databaseList: List<String> by mutableStateOf(emptyList()); private set
     val session = SessionState(this, notificationSrv, preferenceSrv)
+    private var _connectionName: String? by mutableStateOf(null)
     private val statusAtomic = AtomicReferenceState(DISCONNECTED)
     private var _client: TypeDBClient? by mutableStateOf(null)
     private var hasRunningCommandAtomic = AtomicBooleanState(false)
@@ -119,7 +122,7 @@ class ClientState constructor(
         if (isConnecting || isConnected) return@launchAndHandle
         statusAtomic.set(CONNECTING)
         try {
-            connectionName = newConnectionName
+            _connectionName = newConnectionName
             _client = clientConstructor()
             statusAtomic.set(CONNECTED)
             onSuccess()

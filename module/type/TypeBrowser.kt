@@ -146,7 +146,7 @@ class TypeBrowser(isOpen: Boolean = false, order: Int) : Browsers.Browser(isOpen
         Box(Modifier.fillMaxSize().background(Theme.studio.backgroundLight), Alignment.Center) {
             Form.TextButton(
                 text = Label.CONNECT_TO_TYPEDB,
-                leadingIcon = Form.IconArg(Icon.CONNECT_TO_TYPEDB)
+                leadingIcon = Form.IconArg(Icon.TYPEDB_SERVER)
             ) { Service.client.connectServerDialog.open() }
         }
     }
