@@ -134,7 +134,7 @@ internal class LogOutput constructor(
             if (!isCollecting.get()) return@launchAndHandle
             val timeSinceLastResponse = System.currentTimeMillis() - lastOutputTime.get()
             if (timeSinceLastResponse >= RUNNING_INDICATOR_DELAY.inWholeMilliseconds) {
-                output(INFO, "...")
+                output(INFO, Label.ELLIPSES)
                 duration = RUNNING_INDICATOR_DELAY
             } else {
                 duration = RUNNING_INDICATOR_DELAY - timeSinceLastResponse.milliseconds

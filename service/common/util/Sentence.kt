@@ -44,6 +44,8 @@ object Sentence {
                 "while no other query is running. " + RUNNABLE_FILE_EXTENSIONS
     const val CANNOT_BE_UNDONE =
         "This action cannot be undone."
+    const val CHANGE_DEFAULT_PASSWORD_FOR_USER =
+        "Change the default password for user '%s'."
     const val CHANGE_OVERRIDDEN_OWNED_ATT_TYPE =
         "Change the %s type '%s' owning attribute type '%s' from overriding attribute type '%s'."
     const val CHANGE_OVERRIDDEN_OWNED_ATT_TYPE_TO_SET =

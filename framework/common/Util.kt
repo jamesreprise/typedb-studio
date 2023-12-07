@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.vaticle.typedb.studio.service.common.util.Label
 import java.awt.MouseInfo
 import java.awt.Point
 import kotlin.math.roundToInt

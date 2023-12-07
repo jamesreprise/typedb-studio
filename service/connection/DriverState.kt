@@ -34,6 +34,7 @@ import com.vaticle.typedb.studio.service.common.PreferenceService
 import com.vaticle.typedb.studio.service.common.atomic.AtomicBooleanState
 import com.vaticle.typedb.studio.service.common.atomic.AtomicReferenceState
 import com.vaticle.typedb.studio.service.common.util.DialogState
+import com.vaticle.typedb.studio.service.common.util.Label
 import com.vaticle.typedb.studio.service.common.util.Message
 import com.vaticle.typedb.studio.service.common.util.Message.Connection.Companion.CREDENTIALS_EXPIRE_SOON_HOURS
 import com.vaticle.typedb.studio.service.common.util.Message.Connection.Companion.FAILED_TO_CREATE_DATABASE
@@ -61,19 +62,37 @@ class DriverState constructor(
 
     companion object {
         private const val DATABASE_LIST_REFRESH_RATE_MS = 100
+        private const val CONNECTION_NAME_LENGTH_LIMIT = 50
         private val PASSWORD_EXPIRY_WARN_DURATION = Duration.ofDays(7);
         private val LOGGER = KotlinLogging.logger {}
+    }
+
+    class ChangeInitialPasswordDialog : DialogState() {
+        var onCancel: (() -> Unit)? by mutableStateOf(null); private set
+
+        internal fun open(onCancel: () -> Unit) {
+            isOpen = true
+            this.onCancel = onCancel
+        }
+
+        override fun close() {
+            onCancel?.invoke()
+            isOpen = false
+            onCancel = null
+        }
     }
 
     val connectServerDialog = DialogState.Base()
     val selectDBDialog = DialogState.Base()
     val manageDatabasesDialog = DialogState.Base()
     val manageAddressesDialog = DialogState.Base()
+    val changeInitialPasswordDialog = ChangeInitialPasswordDialog()
     val status: Status get() = statusAtomic.state
     val isConnected: Boolean get() = status == CONNECTED
     val isConnecting: Boolean get() = status == CONNECTING
     val isDisconnected: Boolean get() = status == DISCONNECTED
     var connectionName: String? by mutableStateOf(null)
+    var username: String? by mutableStateOf(null)
     var mode: Mode by mutableStateOf(Mode.INTERACTIVE)
     val isScriptMode: Boolean get() = mode == Mode.SCRIPT
     val isInteractiveMode: Boolean get() = mode == Mode.INTERACTIVE
@@ -109,9 +128,19 @@ class DriverState constructor(
     private fun tryConnectToTypeDBEnterpriseAsync(
         addresses: Set<String>, username: String,
         credentials: TypeDBCredential, onSuccess: () -> Unit
-    ) = tryConnectAsync(newConnectionName = "$username@${addresses.first()}", onSuccess) {
-        this.isEnterprise = true
-        TypeDB.enterpriseDriver(addresses, credentials)
+    ) {
+        val fn = {
+            onSuccess()
+            this.username = username
+            if (checkUserPasswordUpdateNeeded()) changeInitialPasswordDialog.open {
+                this.close()
+                connectServerDialog.open()
+            }
+            else mayWarnPasswordExpiry()
+        }
+        tryConnectAsync(newConnectionName = "$username@${addresses.first()}", fn) {
+            TypeDB.enterpriseDriver(addresses, credentials)
+        }
     }
 
     private fun tryConnectAsync(
@@ -120,11 +149,11 @@ class DriverState constructor(
         if (isConnecting || isConnected) return@launchAndHandle
         statusAtomic.set(CONNECTING)
         try {
-            connectionName = newConnectionName
             _driver = driverConstructor()
+            connectionName = if (newConnectionName.length > CONNECTION_NAME_LENGTH_LIMIT)
+                newConnectionName.take(CONNECTION_NAME_LENGTH_LIMIT) + Label.ELLIPSES else newConnectionName
             statusAtomic.set(CONNECTED)
             onSuccess()
-            mayWarnPasswordExpiry()
         } catch (e: TypeDBDriverException) {
             statusAtomic.set(DISCONNECTED)
             notificationSrv.userError(LOGGER, UNABLE_TO_CONNECT, e.message ?: "")
@@ -150,6 +179,20 @@ class DriverState constructor(
         if (passwordExpiryDuration.minus(PASSWORD_EXPIRY_WARN_DURATION).isNegative) {
             notificationSrv.userWarning(LOGGER, CREDENTIALS_EXPIRE_SOON_HOURS, passwordExpiryDuration.toHours() + 1)
         }
+    }
+
+    fun checkUserPasswordUpdateNeeded(): Boolean {
+        try {
+            _driver?.databases()?.all()
+        }
+        catch (e: TypeDBDriverException) {
+            return e.toString().contains("CLS21")
+        }
+        return false
+    }
+
+    fun tryUpdateUserPassword(passwordOld: String, passwordNew: String) {
+        _driver?.user()?.passwordUpdate(passwordOld, passwordNew)
     }
 
     fun sendStopSignal() {
